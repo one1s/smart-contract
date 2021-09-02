@@ -16,13 +16,13 @@ contract ZombieMarket is ZombieOwnership {
     event BuyShopZombie(uint indexed zombieId,address indexed buyer,address indexed seller);
 
     function saleMyZombie(uint _zombieId,uint _price)public onlyOwnerOf(_zombieId){
-        require(_price>=minPrice+tax,'Your price must > minPrice+tax');
-        zombieShop[_zombieId] = zombieSales(msg.sender,_price);
+        require(_price/10**7>=minPrice+tax,'Your price must > minPrice+tax');
+        zombieShop[_zombieId] = zombieSales(msg.sender,_price/10**7);
         shopZombieCount = shopZombieCount.add(1);
         emit SaleZombie(_zombieId,msg.sender);
     }
     function buyShopZombie(uint _zombieId)public payable{
-        require(msg.value >= zombieShop[_zombieId].price,'No enough money');
+        require(msg.value*10**7 >= zombieShop[_zombieId].price,'No enough money');
         _transfer(zombieShop[_zombieId].seller,msg.sender, _zombieId);
         zombieShop[_zombieId].seller.transfer(msg.value - tax);
         delete zombieShop[_zombieId];

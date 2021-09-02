@@ -19,7 +19,7 @@ contract ZombieHelper is ZombieFactory {
   }
 
   function levelUp(uint _zombieId) external payable onlyOwnerOf(_zombieId){
-    require(msg.value == levelUpFee,'No enough money');
+    require(msg.value*10**7 == levelUpFee,'No enough money');
     zombies[_zombieId].level++;
   }
 

@@ -11,7 +11,7 @@ contract ZombieMarket is ZombieOwnership {
     uint shopZombieCount;
     uint public tax = 100000000000000;
     uint public minPrice = 100000000000000;
-    uint public float_point = 10**7; //for kto:10**7 other:1
+    uint public float_point = 1; //for kto:10**7 other:1
     uint public rate = 2500;
 
     event SaleZombie(uint indexed zombieId,address indexed seller);

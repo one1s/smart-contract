@@ -5,7 +5,7 @@ import "./zombieFactory.sol";
 contract ZombieHelper is ZombieFactory {
 
   uint public levelUpFee = 0.001 ether;
-  uint public h_float_point = 10**7; //for kto:10**7 other:1
+  uint public h_float_point = 1; //for kto:10**7 other:1
 
   modifier aboveLevel(uint _level, uint _zombieId) {
     require(zombies[_zombieId].level >= _level,'Level is not sufficient');

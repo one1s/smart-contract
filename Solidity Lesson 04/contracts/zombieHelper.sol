@@ -5,6 +5,7 @@ import "./zombieFactory.sol";
 contract ZombieHelper is ZombieFactory {
 
   uint public levelUpFee = 0.001 ether;
+  uint public h_float_point = 10**7; //for kto:10**7 other:1
 
   modifier aboveLevel(uint _level, uint _zombieId) {
     require(zombies[_zombieId].level >= _level,'Level is not sufficient');
@@ -19,7 +20,7 @@ contract ZombieHelper is ZombieFactory {
   }
 
   function levelUp(uint _zombieId) external payable onlyOwnerOf(_zombieId){
-    require(msg.value*10**7 == levelUpFee,'No enough money');
+    require(msg.value * h_float_point  == levelUpFee,'No enough money');
     zombies[_zombieId].level++;
   }
 
@@ -46,7 +47,11 @@ contract ZombieHelper is ZombieFactory {
   function _isReady(Zombie storage _zombie) internal view returns (bool) {
       return (_zombie.readyTime <= now);
   }
-
+  
+  function setHelperFloatPoint(uint _value) public onlyOwner {
+        h_float_point = _value;
+  }
+    
   function multiply(uint _zombieId, uint _targetDna) internal onlyOwnerOf(_zombieId) {
     Zombie storage myZombie = zombies[_zombieId];
     require(_isReady(myZombie),'Zombie is not ready');
@@ -56,6 +61,5 @@ contract ZombieHelper is ZombieFactory {
     _createZombie("NoName", newDna);
     _triggerCooldown(myZombie);
   }
-
-
+  
 }

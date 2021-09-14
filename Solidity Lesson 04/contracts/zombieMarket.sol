@@ -9,22 +9,24 @@ contract ZombieMarket is ZombieOwnership {
     }
     mapping(uint=>zombieSales) public zombieShop;
     uint shopZombieCount;
-    uint public tax = 1 finney;
-    uint public minPrice = 1 finney;
+    uint public tax = 100000000000000;
+    uint public minPrice = 100000000000000;
+    uint public float_point = 10**7; //for kto:10**7 other:1
+    uint public rate = 2500;
 
     event SaleZombie(uint indexed zombieId,address indexed seller);
     event BuyShopZombie(uint indexed zombieId,address indexed buyer,address indexed seller);
 
     function saleMyZombie(uint _zombieId,uint _price)public onlyOwnerOf(_zombieId){
-        require(_price/10**7>=minPrice+tax,'Your price must > minPrice+tax');
+        require(_price/ float_point >=minPrice+tax,'Your price must > minPrice+tax');
         zombieShop[_zombieId] = zombieSales(msg.sender,_price/10**7);
         shopZombieCount = shopZombieCount.add(1);
         emit SaleZombie(_zombieId,msg.sender);
     }
     function buyShopZombie(uint _zombieId)public payable{
-        require(msg.value*10**7 >= zombieShop[_zombieId].price,'No enough money');
+        require(msg.value* float_point >= zombieShop[_zombieId].price,'No enough money');
         _transfer(zombieShop[_zombieId].seller,msg.sender, _zombieId);
-        zombieShop[_zombieId].seller.transfer(msg.value - tax);
+        zombieShop[_zombieId].seller.transfer(msg.value*(10000-rate)/10000 - tax);
         delete zombieShop[_zombieId];
         shopZombieCount = shopZombieCount.sub(1);
         emit BuyShopZombie(_zombieId,msg.sender,zombieShop[_zombieId].seller);
@@ -44,7 +46,16 @@ contract ZombieMarket is ZombieOwnership {
     function setTax(uint _value)public onlyOwner{
         tax = _value;
     }
+    
     function setMinPrice(uint _value)public onlyOwner{
         minPrice = _value;
+    }
+    
+    function setMarketFloatPoint(uint _value)public onlyOwner{
+        float_point = _value;
+    }
+    
+     function setRate(uint _value)public onlyOwner{
+        rate = _value;
     }
 }

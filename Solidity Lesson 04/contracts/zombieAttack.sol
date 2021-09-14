@@ -5,7 +5,9 @@ import "./zombieHelper.sol";
 contract ZombieAttack is ZombieHelper{
     
     uint randNonce = 0;
-    uint public attackVictoryProbability = 70;
+    uint public attackVictoryProbability = 30;
+    uint public attackeFee = 0;
+    uint public a_float_point = 10**7;
     
     function randMod(uint _modulus) internal returns(uint){
         randNonce++;
@@ -16,8 +18,9 @@ contract ZombieAttack is ZombieHelper{
         attackVictoryProbability = _attackVictoryProbability;
     }
     
-    function attack(uint _zombieId,uint _targetId)external onlyOwnerOf(_zombieId) returns(uint){
+    function attack(uint _zombieId,uint _targetId)external onlyOwnerOf(_zombieId) payable returns(uint){
         require(msg.sender != zombieToOwner[_targetId],'The target zombie is yours!');
+        require(msg.value * a_float_point >= attackeFee);
         Zombie storage myZombie = zombies[_zombieId];
         require(_isReady(myZombie),'Your zombie is not ready!');
         Zombie storage enemyZombie = zombies[_targetId];
@@ -35,5 +38,13 @@ contract ZombieAttack is ZombieHelper{
             return _targetId;
         }
     }
+    
+    function setAttackFee(uint value)  onlyOwner public{
+        attackeFee = value;
+    }
+    function setFloatPoint(uint value) onlyOwner public{
+        a_float_point = value;
+    }
+    
     
 }
